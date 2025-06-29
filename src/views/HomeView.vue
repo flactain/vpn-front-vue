@@ -1,15 +1,3 @@
-<script setup lang="ts">
-import axios from 'axios'
-
-const api = axios
-const login = () => {
-  const
-}
-</script>
-
 <template>
-  <main>
-    <h1>vpn-home</h1>
-    <button onclick="login">Login with Github</button>
-  </main>
+  <h1>you are logged in with Github Account</h1>
 </template>
