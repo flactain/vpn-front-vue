@@ -5,8 +5,8 @@ import { RouterView } from 'vue-router'
 
 <template>
   <v-app>
-    <Header />
     <v-main>
+      <Header />
       <v-container fluid>
         <RouterView />
       </v-container>
