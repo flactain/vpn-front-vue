@@ -5,21 +5,14 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import { VBtn, VApp, VMain, VAppBar, VAppBarTitle, VAppBarNavIcon } from 'vuetify/components'
+import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { createVuetify } from 'vuetify'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 
 const vuetify = createVuetify({
-  components: {
-    VBtn,
-    VApp,
-    VMain,
-    VAppBar,
-    VAppBarTitle,
-    VAppBarNavIcon,
-  },
+  components,
   directives,
 })
 
