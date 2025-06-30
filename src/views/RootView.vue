@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import axios from 'axios'
-
-const login = () => {
-  window.location.href = import.meta.env.VITE_APP_API_URL+'/auth/login';
-}
+import {useAuth} from '@/composables/useAuth'
+const {login} = useAuth()
 </script>
 
 <template>
@@ -17,6 +14,7 @@ const login = () => {
       <v-row>
         <v-col cols="12" md="4">
           <v-card
+            @click="login"
             variant="flat"
             color="blue-grey-darken-4"
             title="Login"
