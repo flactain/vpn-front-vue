@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import Header from '@/components/Header.vue'
+import AuthHeader from '@/components/AuthHeader.vue'
+import GuestHeader from '@/components/GuestHeader.vue'
 import { RouterView } from 'vue-router'
+import { useAuthStore } from './stores/auth'
+
+const authStore = useAuthStore()
 </script>
 
 <template>
   <v-app>
     <v-main>
-      <Header />
+      <template v-if="authStore.isLoggedIn"><AuthHeader /></template>
+      <template v-else><GuestHeader /></template>
       <v-container fluid>
         <RouterView />
       </v-container>
