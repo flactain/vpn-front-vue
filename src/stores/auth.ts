@@ -1,3 +1,4 @@
+import { useStorage } from '@/composables/useStorage'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { defineStore } from 'pinia'
@@ -5,67 +6,88 @@ import { computed } from 'vue'
 import { ref } from 'vue'
 
 interface User {
-  id: string,
-  name: string,
-  imgSrc: string,
-  profileUrl: string,
-  exp: number,
+  id: string
+  name: string
+  imgSrc: string
+  profileUrl: string
+  exp: number
 }
 
 interface JwtPayload {
-  user_id: string
+  preferred_username: string
   name: string
   iss: string
   exp: number
   iat: number
   auth_time: number
 }
+
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref<string | null>(null)
-  const user = ref<User | null>(null)
+  const idToken = ref<any | null>(null)
+  const accessToken = ref<string | null>(null)
+  const userInfo = ref<User | null>(null)
+  const storage = useStorage()
 
   const initToken = () => {
-    const cookieToken = Cookies.get('jwt')
-    if (cookieToken) {
-      token.value = cookieToken
-    }
-  }
+    const { storedIdToken, storedAccessToken, storedUserInfo } = storage.getToken()
 
-  const initAuth = () => {
-    if (token.value) {
-      const decoded = jwtDecode<JwtPayload>(token.value)
-      user.value = {
-        id: decoded.user_id,
-        name: decoded.name,
-        imgSrc: "https://github.com/" + decoded.user_id+ ".png",
-        profileUrl: "https://github.com/" + decoded.user_id,
-        exp: decoded.exp,
+    if (storedIdToken && storedAccessToken && storedUserInfo) {
+      if (isValidToken(JSON.parse(storedIdToken))) {
+        console.log('get tokens from localStorage')
+        idToken.value = storedIdToken
+        accessToken.value = storedAccessToken
+        const parse = JSON.parse(storedUserInfo)
+        userInfo.value = parse
       }
-      console.log(decoded)
     }
-    console.log(user.value)
   }
 
-  const isValidToken = (token: string) => {
-    const decoded = jwtDecode<JwtPayload>(token)
-    if(decoded.exp*1000 > Date.now()){
+  const isValidToken = (idToken: any) => {
+    if (idToken.exp * 1000 > Date.now()) {
       return true
-    }else{
+    } else {
       return false
     }
   }
 
   const isLoggedIn = computed(() => {
-    console.debug(token.value)
-    return !!(token.value && isValidToken(token.value))
+    console.debug(idToken.value)
+    return !!(idToken.value && isValidToken(idToken.value))
   })
 
+  const setToken = (idTokenJwt: any, accessTokenJwt: string) => {
+    if (idTokenJwt && accessTokenJwt) {
+      const decodedIdToken = jwtDecode<JwtPayload>(idTokenJwt)
+
+      userInfo.value = {
+        id: decodedIdToken.preferred_username,
+        name: decodedIdToken.name,
+        imgSrc: 'https://github.com/' + decodedIdToken.preferred_username + '.png',
+        profileUrl: 'https://github.com/' + decodedIdToken.preferred_username,
+        exp: decodedIdToken.exp,
+      }
+      idToken.value = decodedIdToken
+      accessToken.value = accessTokenJwt
+
+      storage.setToken(decodedIdToken, accessToken, userInfo)
+    }
+  }
+
+  const clearToken = () => {
+    storage.clearToken()
+    idToken.value = null
+    accessToken.value = null
+    userInfo.value = null
+  }
+
   initToken()
-  initAuth()
 
   return {
-    token,
-    user,
+    idToken,
+    accessToken,
+    userInfo,
+    setToken,
+    clearToken,
     isLoggedIn,
   }
 })

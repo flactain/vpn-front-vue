@@ -2,14 +2,13 @@
 import { useAuth } from '@/composables/useAuth'
 import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
-const { login } = useAuth()
+const { login ,logout} = useAuth()
 const authStore = useAuthStore()
 
 const getImg = () => {
-  console.log(authStore.user?.imgSrc)
-  return authStore.user?.imgSrc
+  console.log(authStore.userInfo?.imgSrc)
+  return authStore.userInfo?.imgSrc
 }
-const logout = () => {}
 </script>
 
 <template>
@@ -30,9 +29,9 @@ const logout = () => {}
         <v-list>
           <v-list-item
             :prepend-avatar="getImg()"
-            :subtitle="authStore.user?.id"
-            :title="authStore.user?.name"
-            :href="authStore.user?.profileUrl"
+            :subtitle="authStore.userInfo?.id"
+            :title="authStore.userInfo?.name"
+            :href="authStore.userInfo?.profileUrl"
             target="_blank"
             append-icon="mdi-open-in-new"
           ></v-list-item>
