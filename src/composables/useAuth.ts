@@ -1,5 +1,5 @@
-import { useAuthStore } from "@/stores/auth"
-import axios from "axios"
+import { useAuthStore } from '@/stores/auth'
+import axios from 'axios'
 
 export const useAuth = () => {
   const authStore = useAuthStore()
@@ -9,10 +9,13 @@ export const useAuth = () => {
   const login = () => {
     window.location.href = import.meta.env.VITE_APP_API_URL + '/auth/login'
   }
-  const logout = () =>{
+  const logout = () => {
+    console.log(authStore.idToken.vaue)
+    window.location.href =
+      import.meta.env.VITE_APP_API_URL + '/auth/logout?idToken=' + authStore.idToken
     authStore.clearToken()
-    window.location.href = import.meta.env.VITE_APP_API_URL + '/auth/logout'
+    console.log('logout!')
   }
 
-  return {login, logout}
+  return { login, logout }
 }

@@ -6,7 +6,6 @@ const { login ,logout} = useAuth()
 const authStore = useAuthStore()
 
 const getImg = () => {
-  console.log(authStore.userInfo?.imgSrc)
   return authStore.userInfo?.imgSrc
 }
 </script>

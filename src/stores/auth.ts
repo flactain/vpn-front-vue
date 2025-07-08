@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const isValidToken = (idToken: any) => {
-    if (idToken.exp * 1000 > Date.now()) {
+    if (userInfo.value?.exp * 1000 > Date.now()) {
       return true
     } else {
       return false
@@ -66,8 +66,10 @@ export const useAuthStore = defineStore('auth', () => {
         profileUrl: 'https://github.com/' + decodedIdToken.preferred_username,
         exp: decodedIdToken.exp,
       }
-      idToken.value = decodedIdToken
+      idToken.value = idTokenJwt
       accessToken.value = accessTokenJwt
+      console.log('auth.ts setToken' + idToken.value)
+      console.log('auth.ts setToken' + accessToken.value)
 
       storage.setToken(decodedIdToken, accessToken, userInfo)
     }
