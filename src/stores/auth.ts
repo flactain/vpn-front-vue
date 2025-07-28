@@ -30,20 +30,28 @@ export const useAuthStore = defineStore('auth', () => {
 
   const initToken = () => {
     const { storedIdToken, storedAccessToken, storedUserInfo } = storage.getToken()
-
+    console.log("storedIdToken: "+storedIdToken);
+    console.log("storedAccessToken: "+ storedAccessToken);
+    console.log("storedUserInfo: "+ storedUserInfo);
     if (storedIdToken && storedAccessToken && storedUserInfo) {
-      if (isValidToken(JSON.parse(storedIdToken))) {
+      console.log("first condition through");
+      // if (isValidToken(JSON.parse(storedIdToken))) {
+
         console.log('get tokens from localStorage')
         idToken.value = storedIdToken
         accessToken.value = storedAccessToken
         const parse = JSON.parse(storedUserInfo)
         userInfo.value = parse
-      }
+      // }
     }
   }
 
   const isValidToken = (idToken: any) => {
-    if (userInfo.value?.exp * 1000 > Date.now()) {
+    console.log("exp*1000: "+userInfo.value?.exp);
+    console.log("Date.now(): "+Date.now());
+
+
+    if (userInfo.value?.exp * 1000> Date.now()) {
       return true
     } else {
       return false

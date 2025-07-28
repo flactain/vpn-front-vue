@@ -24,6 +24,11 @@ const router = createRouter({
       component: CallbackView,
       meta: { requiresAuth: false},
     },
+    // {
+    //   path: 'vpns/:vpn_id',
+    //   component:VpnsView,
+    //   meta: {requiresAuth: false}
+    // }
   ],
 })
 router.beforeEach((to, from, next) => {

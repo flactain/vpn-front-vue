@@ -9,19 +9,17 @@ const authStore = useAuthStore()
 
 <template>
   <v-app>
-    <v-main>
+    <v-main width="1400px">
       <template v-if="authStore.isLoggedIn"><AuthHeader /></template>
       <template v-else><GuestHeader /></template>
-      <v-container fluid>
         <RouterView />
-      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <style>
 .v-application__wrap {
-  width: 100vw !important;
-  max-width: none !important;
+  /* width: 1280px !important; */
+  /* max-width: 100% !important; */
 }
 </style>
