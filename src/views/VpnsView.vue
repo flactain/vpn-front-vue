@@ -4,12 +4,30 @@ import ServersTable from '@/components/TableServers.vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
+import { shallowRef } from 'vue'
 
 const route = useRoute()
 const vpnId = ref(route.params.id)
 const hasVpnId = computed(() => {
   console.log(!!route.params.id)
   return !!route.params.id
+})
+const dialog = shallowRef(false)
+const clients = ['moriyamato-home-ubuntu', 'moriyamato-laptop-ubutu', 'moriyamato-nuc-windows']
+
+const autocompleteRef = ref(null)
+const selectedClient = ref('')
+const privateIp = ref('')
+const subnetMask = ref('10.100.0.0/24')
+const terminalName = ref('')
+const os = ref('')
+
+const createNew = () => {
+  selectedClient.value = ''
+  autocompleteRef.value.blur()
+}
+const selectClient = computed(() => {
+  return !selectedClient.value
 })
 </script>
 
@@ -23,6 +41,83 @@ const hasVpnId = computed(() => {
       <v-col align-self="start">
         <v-card title="VPN" variant="text">
           <v-card-item v-slot:append>
+            <v-dialog v-model="dialog" max-width="600">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn color="orange-darken-1" class="ma-2" v-bind="activatorProps">
+                  <v-icon start icon="mdi-vector-polyline-plus"></v-icon>
+                  Join
+                </v-btn>
+              </template>
+              <v-card>
+                <v-container>
+                  <v-card-title>Join this VPN!</v-card-title>
+                  <v-card-subtitle>{{ vpnId }}</v-card-subtitle>
+                  <v-card-text>
+                    <v-form>
+                      <v-autocomplete
+                        ref="autocompleteRef"
+                        v-model="selectedClient"
+                        label="Client"
+                        :items="clients"
+                        prepend-inner-icon="mdi-monitor"
+                        variant="underlined"
+                        density="comfortable"
+                      >
+                        <template v-slot:append-item>
+                          <v-divider></v-divider>
+                          <v-list-item
+                            prepend-icon="mdi-plus"
+                            @click="createNew"
+                            class="text-primary"
+                          >
+                            <v-list-item-title>Create new client.</v-list-item-title>
+                          </v-list-item>
+                        </template>
+                      </v-autocomplete>
+
+                      <template v-if="selectClient">
+                        <v-text-field
+                          v-model="terminalName"
+                          label="terminal name"
+                          prepend-inner-icon="mdi-tag-text-outline"
+                          hint="Recomend format: ${your-name}-${terminal-type}-${OS}"
+                          placeholder="moriyamato-nuc-ubuntu"
+                          variant="underlined"
+                        ></v-text-field>
+
+                        <v-text-field
+                          v-model="os"
+                          label="OS"
+                          prepend-inner-icon="mdi-cpu-64-bit"
+                          hint="OS name"
+                          placeholder="Ubuntu 22.04"
+                          variant="underlined"
+                        ></v-text-field>
+                      </template>
+
+                      <v-text-field
+                        v-model="privateIp"
+                        label="Private IP"
+                        prepend-inner-icon="mdi-ip-network-outline"
+                        :hint="'Subnet CIDR:   ' + subnetMask"
+                        persistent-hint
+                        placeholder="10.100.10.1"
+                        variant="underlined"
+                      ></v-text-field>
+
+                      <v-row> </v-row>
+                    </v-form>
+                  </v-card-text>
+                </v-container>
+                <v-divider></v-divider>
+                  <v-card-actions>
+                    <v-btn prepend-icon="mdi-eraser" text="CLEAR" variant="elevated"></v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn prepend-icon="mdi-close-thick" text="CANCEL" color="error" variant="elevated"></v-btn>
+                    <v-btn append-icon="mdi-arrow-right" text="NEXT" color="primary" variant="elevated"></v-btn>
+                  </v-card-actions>
+              </v-card>
+            </v-dialog>
             <v-btn variant="text" icon="mdi-refresh"></v-btn>
           </v-card-item>
 

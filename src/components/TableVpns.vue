@@ -4,8 +4,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 const headers = [
-  { key: 'vpn_id', title: 'VPN ID' },
   { key: 'vpn_name', title: 'VPN名' },
+  { key: 'vpn_id', title: 'VPN ID' },
   { key: 'owner_user_id', title: '所有者' },
   { key: 'server_name', title: 'サーバー' },
   { key: 'public_ip', title: 'パブリックIP' },
@@ -45,7 +45,6 @@ const searchAllVpns = () => {
 }
 onMounted(() => {
   searchAllVpns()
-
 })
 </script>
 
@@ -57,9 +56,14 @@ onMounted(() => {
           <v-btn variant="text" icon="mdi-refresh"></v-btn>
         </v-card-item>
         <v-data-table density="compact" :headers="headers" :items="vpns" fixed-header hover>
-          <template v-slot:item.vpn_id="{ item }">
-            <router-link :to="{ name: 'VpnDetail', params: { id: item.vpn_id } }">
-              {{ item.vpn_id }}
+          <template v-slot:item.vpn_name="{ item }">
+            <router-link
+              :to="{
+                name: 'VpnDetail',
+                params: { id: item.vpn_name },
+              }"
+            >
+              {{ item.vpn_name }}
             </router-link>
           </template>
           <template v-slot:item.owner_user_id="{ item }">
