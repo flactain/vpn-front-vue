@@ -15,7 +15,7 @@ onMounted(() => {
   if (accessToken && idToken) {
     console.log("get idToken and accessToken")
     authStore.setToken(idToken, accessToken)
-    router.push('/home')
+    router.push('/vpns')
   }
 })
 </script>

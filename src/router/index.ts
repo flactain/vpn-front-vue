@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import RootView from '../views/RootView.vue'
-import HomeView from '@/views/HomeView.vue'
+import VpnsView from '@/views/VpnsView.vue'
 import CallbackView from '@/views/CallbackView.vue'
 import { useStorage } from '@/composables/useStorage'
 
@@ -15,9 +15,16 @@ const router = createRouter({
       meta: { requiresGuest: true },
     },
     {
-      path: '/home',
-      component: HomeView,
+      path: '/vpns',
+      component: VpnsView,
+      name: 'VpnHome',
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/vpns/:id',
+      component: VpnsView,
+      name: 'VpnDetail',
+      meta: {requiresAuth: true}
     },
     {
       path: '/callback',
@@ -39,7 +46,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
     next('/')
   } else if (to.meta.requiresGuest && authStore.isLoggedIn) {
-    next('/home')
+    next('/vpns')
   } else {
     next()
   }

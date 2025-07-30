@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useClient } from '@/composables/useClient'
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
 const headers = [
   { key: 'vpn_id', title: 'VPN ID' },
   { key: 'vpn_name', title: 'VPN名' },
@@ -25,7 +27,12 @@ const vpns = ref([
   // },
 ])
 
+const toDisplayDate = (date: string) => {
+  return date.split('T')[0]
+}
+
 const { client } = useClient()
+
 const searchAllVpns = () => {
   client
     .get('/vpn/vpns')
@@ -38,20 +45,41 @@ const searchAllVpns = () => {
 }
 onMounted(() => {
   searchAllVpns()
+
 })
 </script>
 
 <template>
   <v-container fluid>
     <v-col align-self="start">
-      <v-card title="VPNs" variant="outlined">
+      <v-card title="VPNs" variant="flat">
         <v-card-item v-slot:append>
           <v-btn variant="text" icon="mdi-refresh"></v-btn>
         </v-card-item>
-        <!-- <v-card-item> -->
-        <v-data-table :headers="headers" :items="vpns" fixed-header class="text-caption">
+        <v-data-table density="compact" :headers="headers" :items="vpns" fixed-header hover>
           <template v-slot:item.vpn_id="{ item }">
-            <router-link :to="{ path: 'vpns', params: {vpn_id: item.vpn_id}}">{{ item.vpn_id }}</router-link>
+            <router-link :to="{ name: 'VpnDetail', params: { id: item.vpn_id } }">
+              {{ item.vpn_id }}
+            </router-link>
+          </template>
+          <template v-slot:item.owner_user_id="{ item }">
+            <v-avatar size="24"><v-img src="https://github.com/flactain.png"></v-img></v-avatar
+            ><span>{{ ' ' + item.owner_user_id }}</span>
+          </template>
+          <template v-slot:item.created_at="{ item }">
+            {{ toDisplayDate(item.created_at) }}
+          </template>
+          <template v-slot:item.is_approved="{ item }">
+            <v-chip
+              v-if="item.is_approved"
+              color="success"
+              variant="outlined"
+              prepend-icon="mdi-checkbox-marked-circle"
+              >Confirmed</v-chip
+            >
+            <v-chip v-else color="warning" variant="outlined" prepend-icon="mdi-help-circle-outline"
+              >Confirmed</v-chip
+            >
           </template>
         </v-data-table>
       </v-card>

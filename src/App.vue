@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AuthHeader from '@/components/AuthHeader.vue'
 import GuestHeader from '@/components/GuestHeader.vue'
+import NavBarSide from '@/components/NavBarSide.vue'
 import { RouterView } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 
@@ -9,10 +10,16 @@ const authStore = useAuthStore()
 
 <template>
   <v-app>
+    <template v-if="authStore.isLoggedIn">
+      <AuthHeader />
+      <NavBarSide />
+    </template>
+    <template v-else>
+      <GuestHeader />
+    </template>
+
     <v-main width="1400px">
-      <template v-if="authStore.isLoggedIn"><AuthHeader /></template>
-      <template v-else><GuestHeader /></template>
-        <RouterView />
+      <RouterView />
     </v-main>
   </v-app>
 </template>

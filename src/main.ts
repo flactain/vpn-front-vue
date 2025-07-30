@@ -10,10 +10,21 @@ import * as directives from 'vuetify/directives'
 import { createVuetify } from 'vuetify'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import { aliases, md } from 'vuetify/iconsets/md'
+
+
 
 const vuetify = createVuetify({
   components,
   directives,
+  icons:{
+    defaultSet: 'mdi',
+    aliases,
+    sets:{
+      md,
+    }
+  }
 })
 
 const app = createApp(App)
