@@ -2,7 +2,7 @@
 import { useAuth } from '@/composables/useAuth'
 import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
-const { login ,logout} = useAuth()
+const { login, logout } = useAuth()
 const authStore = useAuthStore()
 
 const getImg = () => {

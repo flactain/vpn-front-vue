@@ -11,9 +11,9 @@ const accessToken = hashParams.get('access_token')
 const idToken = hashParams.get('id_token')
 
 onMounted(() => {
-  console.log("back to front callback")
+  console.log('back to front callback')
   if (accessToken && idToken) {
-    console.log("get idToken and accessToken")
+    console.log('get idToken and accessToken')
     authStore.setToken(idToken, accessToken)
     router.push('/vpns')
   }

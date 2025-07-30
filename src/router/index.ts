@@ -24,12 +24,12 @@ const router = createRouter({
       path: '/vpns/:id',
       component: VpnsView,
       name: 'VpnDetail',
-      meta: {requiresAuth: true}
+      meta: { requiresAuth: true },
     },
     {
       path: '/callback',
       component: CallbackView,
-      meta: { requiresAuth: false},
+      meta: { requiresAuth: false },
     },
     // {
     //   path: 'vpns/:vpn_id',

@@ -7,9 +7,9 @@ import SourceCard from '@/components/SourceCard.vue'
 
 <template>
   <main>
-      <AboutContent />
-      <GetStartCard />
-      <ReferenceCard />
-      <SourceCard />
+    <AboutContent />
+    <GetStartCard />
+    <ReferenceCard />
+    <SourceCard />
   </main>
 </template>

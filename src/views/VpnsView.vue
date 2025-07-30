@@ -110,12 +110,22 @@ const selectClient = computed(() => {
                   </v-card-text>
                 </v-container>
                 <v-divider></v-divider>
-                  <v-card-actions>
-                    <v-btn prepend-icon="mdi-eraser" text="CLEAR" variant="elevated"></v-btn>
-                    <v-spacer></v-spacer>
-                    <v-btn prepend-icon="mdi-close-thick" text="CANCEL" color="error" variant="elevated"></v-btn>
-                    <v-btn append-icon="mdi-arrow-right" text="NEXT" color="primary" variant="elevated"></v-btn>
-                  </v-card-actions>
+                <v-card-actions>
+                  <v-btn prepend-icon="mdi-eraser" text="CLEAR" variant="elevated"></v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    prepend-icon="mdi-close-thick"
+                    text="CANCEL"
+                    color="error"
+                    variant="elevated"
+                  ></v-btn>
+                  <v-btn
+                    append-icon="mdi-arrow-right"
+                    text="NEXT"
+                    color="primary"
+                    variant="elevated"
+                  ></v-btn>
+                </v-card-actions>
               </v-card>
             </v-dialog>
             <v-btn variant="text" icon="mdi-refresh"></v-btn>
