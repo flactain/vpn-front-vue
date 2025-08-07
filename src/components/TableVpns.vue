@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useClient } from '@/composables/useClient'
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
 
 const headers = [
   { key: 'vpn_name', title: 'VPN名' },
@@ -16,15 +15,6 @@ const headers = [
 ]
 //test
 const vpns = ref([
-  // {
-  //   vpn_id: '019841d4-3244-77fd-94ef-066f4a1964bf',
-  //   vpn_name: 'vpn-sakura-ishikari',
-  //   owner_user_id: 'flactain',
-  //   server_name: 'server-sakura-ishikari',
-  //   public_ip: '153.127.63.174',
-  //   clients_count: 1,
-  //   created_at: '2025-07-25 22:45:11.369',
-  // },
 ])
 
 const toDisplayDate = (date: string) => {
@@ -38,6 +28,7 @@ const searchAllVpns = () => {
     .get('/vpn/vpns')
     .then((response) => {
       vpns.value = response.data.data
+      console.log(response.data.data)
     })
     .catch((err) => {
       console.error(err)
@@ -60,7 +51,7 @@ onMounted(() => {
             <router-link
               :to="{
                 name: 'VpnDetail',
-                params: { id: item.vpn_name },
+                params: { id: item.vpn_id},
               }"
             >
               {{ item.vpn_name }}

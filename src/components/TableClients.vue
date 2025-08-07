@@ -1,35 +1,33 @@
 <script setup lang="ts">
 import { useClient } from '@/composables/useClient'
 import { ref, onMounted } from 'vue'
+
 const headers = [
   { key: 'terminal_name', title: '端末名' },
   { key: 'terminal_id', title: '端末ID' },
   { key: 'owner_user_id', title: '所有者' },
-  { key: 'public_ip', title: 'パブリックIP' },
-  { key: 'private_ip', title: 'プライベートIP' },
-  { key: 'created_at', title: '登録日' },
+  { key: 'allowed_ip', title: 'プライベートIP' },
+  { key: 'is_approved', title: '承認' },
 ]
-//test
-const servers = ref([
-  // {
-  //   vpn_id: '019841d4-3244-77fd-94ef-066f4a1964bf',
-  //   vpn_name: 'vpn-sakura-ishikari',
-  //   owner_user_id: 'flactain',
-  //   server_name: 'server-sakura-ishikari',
-  //   public_ip: '153.127.63.174',
-  //   clients_count: 1,
-  //   created_at: '2025-07-25 22:45:11.369',
-  // },
-])
-
 const toDisplayDate = (date: string) => {
   return date.split('T')[0]
 }
 
+interface Props {
+  vpnId: string
+}
+const props = defineProps<Props>()
+
+const servers = ref([])
+
 const { client } = useClient()
-const searchAllServers = () => {
+const searchAllClients = () => {
   client
-    .get('/vpn/servers')
+    .get('/vpn/clients', {
+      params: {
+        vpn_id: props.vpnId,
+      },
+    })
     .then((response) => {
       servers.value = response.data.data
     })
@@ -37,8 +35,9 @@ const searchAllServers = () => {
       console.error(err)
     })
 }
+
 onMounted(() => {
-  searchAllServers()
+  searchAllClients()
 })
 </script>
 
