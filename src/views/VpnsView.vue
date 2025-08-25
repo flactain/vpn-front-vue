@@ -6,11 +6,25 @@ import ClientsDialog from '@/components/DialogClients.vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
+import { provide } from 'vue'
 
 const route = useRoute()
+
+const clientRefreshCount = ref(0)
+
+// function
+const refreshClientData = () =>{
+  console.log('client refresh')
+  clientRefreshCount.value++
+}
+
+// computed data
 const hasVpnId = computed(() => {
   return !!route.params.id
 })
+
+// provide/inject
+provide('clientRefreshCount', clientRefreshCount)
 </script>
 :loading="isSaving" color="primary" icon="mdi-content-save" variant="flat" @click="onClickSave"
 <template>
@@ -22,7 +36,7 @@ const hasVpnId = computed(() => {
     <v-container fluid>
       <v-col align-self="start">
         <v-card title="VPN" variant="text">
-          <ClientsDialog />
+          <ClientsDialog :vpnId="route.params.id" @register-client="refreshClientData"/>
 
           <v-expansion-panels>
             <v-expansion-panel>

@@ -11,7 +11,17 @@ import { useClient } from '@/composables/useClient'
 
 import { useAuthStore } from '@/stores/auth'
 import { onMounted } from 'vue'
+
+//vue config
 const authStore = useAuthStore()
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>();
+interface Emits{
+  registerClient: []
+}
+interface Props {
+  vpnId: string
+}
 
 const dialog = shallowRef(false)
 const terminals = ref([
@@ -38,14 +48,19 @@ const createNew = () => {
   autocompleteRef.value.blur()
 }
 const selectClient = computed(() => {
+  console.log(selectedClient.value)
   return !selectedClient.value
 })
-const submit = () => {
-  dialog.value = false
-
-}
 
 // functions
+const submit = () => {
+  dialog.value = false
+  registerClient()
+  searchAllTerminals()
+  emit('registerClient')
+}
+
+// apis
 const { client } = useClient()
 const searchAllTerminals = () => {
   client
@@ -56,6 +71,29 @@ const searchAllTerminals = () => {
     })
     .then((response) => {
       terminals.value = response.data.data
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+const registerClient = () => {
+  console.log({
+    vpnid: props.vpnId,
+    terminal_id: selectedClient.value,
+    allowed_ip: privateIp.value,
+    publicKey: publicKey.value,
+  })
+  client
+    .post('/vpn/clients', {
+      client_info: {
+        vpn_id: props.vpnId,
+        terminal_id: selectedClient.value,
+        allowed_ip: privateIp.value,
+        public_key: publicKey.value,
+      },
+    })
+    .then((response) => {
+      console.log(response.data.message)
     })
     .catch((err) => {
       console.log(err)

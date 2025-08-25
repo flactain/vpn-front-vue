@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useClient } from '@/composables/useClient'
+import { watch } from 'vue'
+import { inject } from 'vue'
 import { ref, onMounted } from 'vue'
 
 const headers = [
@@ -35,6 +37,13 @@ const searchAllClients = () => {
       console.error(err)
     })
 }
+
+// props
+const refreshCount = inject('clientRefreshCount')
+watch(refreshCount, ()=>{
+  console.log('refresh so search client')
+  searchAllClients()
+})
 
 onMounted(() => {
   searchAllClients()
