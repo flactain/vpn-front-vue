@@ -2,10 +2,10 @@
 import { useAuth } from '@/composables/useAuth'
 import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { useClient } from '@/composables/useClient'
 import { onMounted } from 'vue'
-const { login, logout } = useAuth()
+const { logout } = useAuth()
 const authStore = useAuthStore()
 
 const headers = [
@@ -17,10 +17,29 @@ const headers = [
   { key: 'request_user_id', title: '依頼者' },
   { key: 'actions', title: '承認' },
 ]
-const requests = ref([])
-
 
 const { client } = useClient()
+interface approvalRequest {
+  resource_type: string
+  resource_handle: string
+  vpn_id: string
+  resource_id: string
+  asignee_user_id?: string
+  request_user_id?: string
+  index: number
+}
+
+interface approvalRequestDto {
+  resource_type: string
+  resource_handle: string
+  vpn_id: string
+  resource_id: string
+  asignee_user_id?: string
+  request_user_id?: string
+}
+
+const requests: Ref<approvalRequest[]> = ref([])
+
 const searchApprovalRequest = () => {
   client
     .get('vpn/vpns/requests', {
@@ -29,15 +48,30 @@ const searchApprovalRequest = () => {
       },
     })
     .then((response) => {
-      requests.value = response.data.data
+      requests.value = response.data.data.map((item: approvalRequest, index: number) => ({
+        ...item,
+        index,
+      }))
     })
     .catch((err) => {
       console.error(err)
     })
 }
-const approveRequest = (vpn_id, resource_id) =>{
-  console.log(vpn_id)
-  console.log(resource_id)
+const approveRequest = (target_index: number) => {
+  const foundApprove: approvalRequest = requests.value.find((item) => {
+    return item.index === target_index
+  })!
+
+  const { index, ...foundApproveDto } = foundApprove
+
+  client
+    .post('vpn/vpns/requests',   foundApproveDto )
+    .then((response) => {
+      console.log(response)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 }
 
 const getImg = () => {
@@ -45,9 +79,6 @@ const getImg = () => {
 }
 
 const approvalDialog = ref(false)
-const showRequests = () => {
-  approvalDialog.value = true
-}
 
 onMounted(() => {
   searchApprovalRequest()
@@ -57,16 +88,16 @@ onMounted(() => {
 <template>
   <v-app-bar elevation="1" color="blue-grey-darken-4" density="default">
     <template v-slot:prepend>
-      <v-btn @click="router.push('/')" prepend-icon="mdi-vpn" rounded="xs" size="large"
-        >vpn-home</v-btn
-      >
+      <v-btn @click="router.push('/')" prepend-icon="mdi-vpn" rounded="xs" size="large">
+        vpn-home
+      </v-btn>
     </template>
 
     <template>
       <v-btn icon="mdi-email-check-outline"></v-btn>
     </template>
 
-    <v-dialog v-model="approvalDialog" max-width="800" persistent>
+    <v-dialog v-model="approvalDialog" max-width="1000" persistent>
       <template v-slot:activator="{ props: activatorProps }">
         <v-menu>
           <template v-slot:activator="{ props }">
@@ -99,8 +130,8 @@ onMounted(() => {
       </template>
       <v-card title="Approval Requests">
         <v-data-table hide-default-footer :headers="headers" :items="requests">
-          <template v-slot:item.actions="{item}">
-            <v-btn color="primary" @click="approveRequest(item.vpn_id, item.resource_id)">approve</v-btn>
+          <template v-slot:item.actions="{ item }">
+            <v-btn color="primary" @click="approveRequest(item.index)"> approve </v-btn>
           </template>
         </v-data-table>
         <template v-slot:actions>
