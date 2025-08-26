@@ -19,7 +19,7 @@ const headers = [
 ]
 
 const { client } = useClient()
-interface approvalRequest {
+interface ApprovalRequest {
   resource_type: string
   resource_handle: string
   vpn_id: string
@@ -29,7 +29,7 @@ interface approvalRequest {
   index: number
 }
 
-interface approvalRequestDto {
+interface ApprovalRequestDto {
   resource_type: string
   resource_handle: string
   vpn_id: string
@@ -38,7 +38,7 @@ interface approvalRequestDto {
   request_user_id?: string
 }
 
-const requests: Ref<approvalRequest[]> = ref([])
+const requests: Ref<ApprovalRequest[]> = ref([])
 
 const searchApprovalRequest = () => {
   client
@@ -48,7 +48,7 @@ const searchApprovalRequest = () => {
       },
     })
     .then((response) => {
-      requests.value = response.data.data.map((item: approvalRequest, index: number) => ({
+      requests.value = response.data.data.map((item: ApprovalRequest, index: number) => ({
         ...item,
         index,
       }))
@@ -58,14 +58,15 @@ const searchApprovalRequest = () => {
     })
 }
 const approveRequest = (target_index: number) => {
-  const foundApprove: approvalRequest = requests.value.find((item) => {
+  const foundApprove: ApprovalRequest = requests.value.find((item) => {
     return item.index === target_index
   })!
 
-  const { index, ...foundApproveDto } = foundApprove
+  const { index, ...rest} = foundApprove
+  const foundApproveDto: ApprovalRequestDto = rest;
 
   client
-    .post('vpn/vpns/requests',   foundApproveDto )
+    .post('vpn/vpns/requests', foundApproveDto)
     .then((response) => {
       console.log(response)
     })
